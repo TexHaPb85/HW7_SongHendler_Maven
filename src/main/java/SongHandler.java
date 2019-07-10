@@ -9,10 +9,6 @@ public class SongHandler {
     private List<String> exceptedWords;
     private final String badWords[] = new String[]{"fuck", "shit",};
 
-    public SongHandler(String song) {
-        this.song = song;
-    }
-
     public SongHandler() {
         File file = new File(getClass().getClassLoader().getResource("song.txt").getFile());
         this.song = FileWorker.readFile(file);
@@ -47,7 +43,7 @@ public class SongHandler {
 
     public void handleTheSong() {
         words = Stream.of(song.split("[ ,;':.)\n(!?\\\\]+")).collect(Collectors.toList());
-        words.replaceAll(e->e.toLowerCase());
+        words.replaceAll(String::toLowerCase);
         replaceAbbreviatedWord("ll","will");
         replaceAbbreviatedWord("m","am");
         replaceAbbreviatedWord("t","it");
@@ -67,7 +63,7 @@ public class SongHandler {
                 wordPeriodicity.put(word,1);
         }
         System.out.println(entriesSortedByValues(wordPeriodicity));
-        //I`m waiting for your advices about how can i optimize it))
+        //I`m waiting for your advices about how can i optimize it all))
         return entriesSortedByValues(wordPeriodicity).stream().limit(howMuchWords).collect(Collectors.toList());
     }
 

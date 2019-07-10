@@ -1,4 +1,5 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class FileWorker {
@@ -12,8 +13,10 @@ public class FileWorker {
             e.printStackTrace();
         }
         StringBuilder sb = new StringBuilder();
-        while (sc.hasNextLine()){
-            sb.append(sc.nextLine()+"\n");
+        if (sc != null) {
+            while (sc.hasNextLine()) {
+                sb.append(sc.nextLine()).append("\n");
+            }
         }
         return sb.toString();
     }
@@ -26,8 +29,10 @@ public class FileWorker {
             e.printStackTrace();
         }
         StringBuilder sb = new StringBuilder();
-        while (sc.hasNextLine()){
-            sb.append(sc.nextLine()+"\n");
+        if (sc != null) {
+            while (sc.hasNextLine()) {
+                sb.append(sc.nextLine()).append("\n");
+            }
         }
         return sb.toString();
     }
