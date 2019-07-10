@@ -34,12 +34,28 @@ public class SongHandler {
         return sortedEntries;
     }
 
+    public void replaceAbbreviatedWord(String replaceWord,String replaceTo){
+        ListIterator<String> iterator = words.listIterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (next.equals(replaceWord)) {
+                //Replace element
+                iterator.set(replaceTo);
+            }
+        }
+    }
+
     public void handleTheSong() {
         words = Stream.of(song.split("[ ,;':.)\n(!?\\\\]+")).collect(Collectors.toList());
+        words.replaceAll(e->e.toLowerCase());
+        replaceAbbreviatedWord("ll","will");
+        replaceAbbreviatedWord("m","am");
+        replaceAbbreviatedWord("t","it");
+        replaceAbbreviatedWord("re","are");
         exceptedWords= words.stream().filter(e -> e.length() <= 2 || isBadWord(e)).collect(Collectors.toList());
         words.removeIf(e->isBadWord(e) || e.length() <= 2);
-        System.out.println("bad:\n"+exceptedWords+"\n");
-        System.out.println("good:\n"+ words+"\n");
+        System.out.println("excepted words:\n"+exceptedWords+"\n");
+        System.out.println("matching words:\n"+ words+"\n");
     }
 
     public List getOftenWords(int howMuchWords){
@@ -50,7 +66,7 @@ public class SongHandler {
             else
                 wordPeriodicity.put(word,1);
         }
-        //System.out.println(entriesSortedByValues(wordPeriodicity));
+        System.out.println(entriesSortedByValues(wordPeriodicity));
         //I`m waiting for your advices about how can i optimize it))
         return entriesSortedByValues(wordPeriodicity).stream().limit(howMuchWords).collect(Collectors.toList());
     }
