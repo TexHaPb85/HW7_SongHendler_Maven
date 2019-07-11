@@ -6,19 +6,7 @@ public class FileWorker {
 
     public static String readFile(String filePath) {
         File file = new File(filePath);
-        Scanner sc = null;
-        try {
-            sc = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        StringBuilder sb = new StringBuilder();
-        if (sc != null) {
-            while (sc.hasNextLine()) {
-                sb.append(sc.nextLine()).append("\n");
-            }
-        }
-        return sb.toString();
+        return readFile(file);
     }
 
     public static String readFile(File file) {
