@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SongHandler implements WordsWorker {
+public class SongHandler {
     private String song;
     private List<String> words;
     private List<String> exceptedWords;
@@ -33,7 +33,7 @@ public class SongHandler implements WordsWorker {
     }
 
     private boolean isBadWord(String word) {
-        return Arrays.stream(BAD_WORDS).anyMatch(e -> word.toLowerCase().contains(e));
+        return Arrays.stream(WordsWorker.BAD_WORDS).anyMatch(e -> word.toLowerCase().contains(e));
     }
 
     private <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> sortEntriesByValue(Map<K, V> map) {
@@ -56,8 +56,8 @@ public class SongHandler implements WordsWorker {
      * this word, and it doesn`t need to be replaced.
      */
     private int getIndexOfReplacing(String inputWord) {
-        for (int i = 0; i < REPLACE_WHAT.length; i++) {
-            if (REPLACE_WHAT[i].equals(inputWord))
+        for (int i = 0; i < WordsWorker.REPLACE_WHAT.length; i++) {
+            if (WordsWorker.REPLACE_WHAT[i].equals(inputWord))
                 return i;
         }
 
@@ -70,7 +70,7 @@ public class SongHandler implements WordsWorker {
             String next = iterator.next();
             int indexOfReplacing = getIndexOfReplacing(next);
             if (indexOfReplacing != -1) {
-                iterator.set(REPLACE_TO[indexOfReplacing]);
+                iterator.set(WordsWorker.REPLACE_TO[indexOfReplacing]);
             }
         }
     }
