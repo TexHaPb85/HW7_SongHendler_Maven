@@ -1,4 +1,3 @@
-
 package utilities;
 
 import java.io.File;
@@ -9,6 +8,7 @@ public class FileWorker {
 
     public static String readFile(String filePath) {
         File file = new File(filePath);
+
         return readFile(file);
     }
 
@@ -25,6 +25,7 @@ public class FileWorker {
                 sb.append(sc.nextLine()).append("\n");
             }
         }
+
         return sb.toString();
     }
 }

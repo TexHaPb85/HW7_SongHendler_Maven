@@ -8,7 +8,6 @@
     <artifactId>HW7</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <reporting>
         <plugins>
             <plugin>

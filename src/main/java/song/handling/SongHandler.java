@@ -33,7 +33,7 @@ public class SongHandler implements WordsWorker {
     }
 
     private boolean isBadWord(String word) {
-        return Arrays.stream(badWords).anyMatch(e -> word.toLowerCase().contains(e));
+        return Arrays.stream(BAD_WORDS).anyMatch(e -> word.toLowerCase().contains(e));
     }
 
     private <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> sortEntriesByValue(Map<K, V> map) {
@@ -46,18 +46,18 @@ public class SongHandler implements WordsWorker {
     /**
      * This method using for abbreviated words replacing.
      * '-1' - is not a magic number, it`s a negative result
-     * which returns when "replaceWhat" array doesn`t contain
+     * which returns when "REPLACE_WHAT" array doesn`t contain
      * inputWord and it is not necessary to replace it.
      *
      * @param inputWord - word which we want to replace.
-     * @return index of word in "replaceTo[]" array
+     * @return index of word in "REPLACE_TO[]" array
      * which should be set instead of the given word,
-     * or -1 if "replaceWhat" array does not contains
+     * or -1 if "REPLACE_WHAT" array does not contains
      * this word, and it doesn`t need to be replaced.
      */
     private int getIndexOfReplacing(String inputWord) {
-        for (int i = 0; i < replaceWhat.length; i++) {
-            if (replaceWhat[i].equals(inputWord))
+        for (int i = 0; i < REPLACE_WHAT.length; i++) {
+            if (REPLACE_WHAT[i].equals(inputWord))
                 return i;
         }
 
@@ -70,7 +70,7 @@ public class SongHandler implements WordsWorker {
             String next = iterator.next();
             int indexOfReplacing = getIndexOfReplacing(next);
             if (indexOfReplacing != -1) {
-                iterator.set(replaceTo[indexOfReplacing]);
+                iterator.set(REPLACE_TO[indexOfReplacing]);
             }
         }
     }
