@@ -1,44 +1,62 @@
-package songHandling;
+package song.handling;
 
 import comparators.WordPeriodicityComparatorDesc;
-import util.FileWorker;
+import utilities.FileWorker;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SongHandler {
+public class SongHandler implements WordsWorker {
     private String song;
     private List<String> words;
     private List<String> exceptedWords;
-    private Set<String> badWords = new HashSet<>();
+
+    private int howMuchWordsShow = 5;
+    private int minLengthOfWord = 3;
 
     public SongHandler() {
-        badWords = new HashSet<>();
-        Collections.addAll(badWords, "fuck", "shit");
         File file = new File(getClass().getClassLoader().getResource("song.txt").getFile());
         this.song = FileWorker.readFile(file);
         handleTheSong();
     }
 
+    public SongHandler(File file) {
+        this.song = FileWorker.readFile(file);
+        handleTheSong();
+    }
+
+    public SongHandler(String song) {
+        this.song = song;
+        handleTheSong();
+    }
+
     private boolean isBadWord(String word) {
-        for (String badWord : badWords) {
-            if (word.toLowerCase().contains(badWord))
-                return true;
-        }
-        return false;
+        return Arrays.stream(badWords).anyMatch(e->word.toLowerCase().contains(e));
     }
 
     private <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> sortEntriesByValue(Map<K, V> map) {
-        SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new WordPeriodicityComparatorDesc<K, V>());
+        SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>(new WordPeriodicityComparatorDesc<>());
         sortedEntries.addAll(map.entrySet());
         return sortedEntries;
     }
 
-    private int arrayContains(String[] array, String containElement) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(containElement))
+    /**
+     * This method using for abbreviated words replacing.
+     * '-1' - is not a magic number, it`s a negative result
+     * which returns when "replaceWhat" array doesn`t contain
+     * inputWord and it is not necessary to replace it.
+     * @param inputWord - word which we want to replace.
+     * @return index of word in "replaceTo[]" array
+     * which should be set instead of the given word,
+     * or -1 if "replaceWhat" array does not contains
+     * this word, and it doesn`t need to be replaced.
+     */
+    private int getIndexOfReplacing(String inputWord) {
+        for (int i = 0; i < replaceWhat.length; i++) {
+            if (replaceWhat[i].equals(inputWord))
                 return i;
         }
         return -1;
@@ -46,11 +64,9 @@ public class SongHandler {
 
     private void replaceAbbreviatedWords() {
         ListIterator<String> iterator = words.listIterator();
-        String replaceWhat[] = new String[]{"ll", "m", "t", "re"};
-        String replaceTo[] = new String[]{"will", "am", "it", "are"};
         while (iterator.hasNext()) {
             String next = iterator.next();
-            int indexOfReplacing = arrayContains(replaceWhat, next);
+            int indexOfReplacing = getIndexOfReplacing(next);
             if (indexOfReplacing != -1) {
                 iterator.set(replaceTo[indexOfReplacing]);
             }
@@ -58,20 +74,19 @@ public class SongHandler {
     }
 
     private void exceptUnsuitableWords() {
-        exceptedWords = words.stream().filter(e -> e.length() <= 2 || isBadWord(e)).collect(Collectors.toList());
-        words.removeIf(e -> isBadWord(e) || e.length() <= 2);
+        exceptedWords = words.stream().filter(e -> e.length() < minLengthOfWord || isBadWord(e)).collect(Collectors.toList());
+        words.removeIf(e -> isBadWord(e) || e.length() < minLengthOfWord);
     }
 
-    public void handleTheSong() {
+    private void handleTheSong() {
         words = Stream.of(song.split("[ ,;':.)\n(!?\\\\]+")).collect(Collectors.toList());
-        //words.replaceAll(String::toLowerCase);
         replaceAbbreviatedWords();
         exceptUnsuitableWords();
         System.out.println("excepted words:\n" + exceptedWords + "\n");
         System.out.println("matching words:\n" + words + "\n");
     }
 
-    public List getOftenWords(int howMuchWords) {
+    private List getOftenWords() {
         Map<String, Integer> wordPeriodicity = new TreeMap<>();
         for (String word : words) {
             if (wordPeriodicity.containsKey(word))
@@ -81,11 +96,7 @@ public class SongHandler {
         }
         System.out.println(sortEntriesByValue(wordPeriodicity));
         //I`m waiting for your advices about how can i optimize it all))
-        return sortEntriesByValue(wordPeriodicity).stream().limit(howMuchWords).collect(Collectors.toList());
-    }
-
-    public String getSong() {
-        return song;
+        return sortEntriesByValue(wordPeriodicity).stream().limit(howMuchWordsShow).collect(Collectors.toList());
     }
 
     @Override
@@ -93,6 +104,6 @@ public class SongHandler {
         return "Words count: " + words.size()
                 + "\nexcepted words: " + exceptedWords.stream().distinct().collect(Collectors.toList())
                 + "\nnum of excepted words: " + exceptedWords.size()
-                + "\n5 most often words: " + getOftenWords(5);
+                + "\n5 most often words: " + getOftenWords();
     }
 }

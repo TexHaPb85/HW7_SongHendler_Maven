@@ -1,4 +1,4 @@
-import songHandling.SongHandler;
+import song.handling.SongHandler;
 
 /**
  * Main class.

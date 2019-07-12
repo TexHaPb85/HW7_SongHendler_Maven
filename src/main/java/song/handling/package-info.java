@@ -1,4 +1,4 @@
 /**
  * Info about this songHandling package.
  */
-package songHandling;
+package song.handling;
