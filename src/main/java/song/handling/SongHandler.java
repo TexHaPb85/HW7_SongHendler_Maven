@@ -4,7 +4,6 @@ import comparators.WordPeriodicityComparatorDesc;
 import utilities.FileWorker;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,12 +33,13 @@ public class SongHandler implements WordsWorker {
     }
 
     private boolean isBadWord(String word) {
-        return Arrays.stream(badWords).anyMatch(e->word.toLowerCase().contains(e));
+        return Arrays.stream(badWords).anyMatch(e -> word.toLowerCase().contains(e));
     }
 
     private <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> sortEntriesByValue(Map<K, V> map) {
         SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>(new WordPeriodicityComparatorDesc<>());
         sortedEntries.addAll(map.entrySet());
+
         return sortedEntries;
     }
 
@@ -48,6 +48,7 @@ public class SongHandler implements WordsWorker {
      * '-1' - is not a magic number, it`s a negative result
      * which returns when "replaceWhat" array doesn`t contain
      * inputWord and it is not necessary to replace it.
+     *
      * @param inputWord - word which we want to replace.
      * @return index of word in "replaceTo[]" array
      * which should be set instead of the given word,
@@ -59,6 +60,7 @@ public class SongHandler implements WordsWorker {
             if (replaceWhat[i].equals(inputWord))
                 return i;
         }
+
         return -1;
     }
 
@@ -73,6 +75,7 @@ public class SongHandler implements WordsWorker {
         }
     }
 
+    //I`m waiting for your advices about how can i optimize it
     private void exceptUnsuitableWords() {
         exceptedWords = words.stream().filter(e -> e.length() < minLengthOfWord || isBadWord(e)).collect(Collectors.toList());
         words.removeIf(e -> isBadWord(e) || e.length() < minLengthOfWord);
@@ -86,6 +89,7 @@ public class SongHandler implements WordsWorker {
         System.out.println("matching words:\n" + words + "\n");
     }
 
+    //I`m waiting for your advices about how can i optimize it
     private List getOftenWords() {
         Map<String, Integer> wordPeriodicity = new TreeMap<>();
         for (String word : words) {
@@ -95,7 +99,7 @@ public class SongHandler implements WordsWorker {
                 wordPeriodicity.put(word, 1);
         }
         System.out.println(sortEntriesByValue(wordPeriodicity));
-        //I`m waiting for your advices about how can i optimize it all))
+
         return sortEntriesByValue(wordPeriodicity).stream().limit(howMuchWordsShow).collect(Collectors.toList());
     }
 
